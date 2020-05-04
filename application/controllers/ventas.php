@@ -248,8 +248,14 @@ class ventas extends CI_Controller {
             $res = 'ERROR VENTA YA PROCESADA';
         } else {
             if (isset($codigo)) {
-                $this->Crud->terminarVentaBoleta($codigo);
-                $res = 'VENTA COMPLETADA';
+                if($venta[0]->tipo == "Guia"){
+                    $this->Crud->terminarVentaGuia($codigo);
+                    $res = 'VENTA COMPLETADA'; 
+                }else{
+                   $this->Crud->terminarVentaBoleta($codigo);
+                $res = 'VENTA COMPLETADA'; 
+                }
+                
             } else {
                 $res = 'Error de datos';
             }

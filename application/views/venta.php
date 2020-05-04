@@ -909,7 +909,7 @@ $admin = $this->session->userdata('admin');
           
             </main>
 
-<!--            <pre>{{$data}}</pre>-->
+            <pre>{{$data}}</pre>
         </div>
 
         <script type="text/javascript" src="<?= base_url() ?>assets/js/jquery-3.2.1.min.js" ></script> 

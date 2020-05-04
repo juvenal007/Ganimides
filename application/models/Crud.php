@@ -286,6 +286,13 @@ class Crud extends CI_Model {
         $this->db->where('idventa', $codigo);
         return $this->db->update('venta', $datos);
     }
+        public function terminarVentaGuia($codigo) {
+        $datos = array(
+            'estado' => 'En Tramite'
+        );
+        $this->db->where('idventa', $codigo);
+        return $this->db->update('venta', $datos);
+    }
 
     public function anularVentaBoleta($codigo) {
         $datos = array(
