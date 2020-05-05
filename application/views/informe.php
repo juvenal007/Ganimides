@@ -10,7 +10,7 @@ $admin = $this->session->userdata('admin');
 <html lang="en">
     <head>
         <!-- Title -->
-        <title>SYSTEMSALES V1.0</title>
+        <title>SYS GANIMIDES V1.1</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
         <meta charset="UTF-8">
         <!-- Styles -->
@@ -243,9 +243,7 @@ $admin = $this->session->userdata('admin');
                         <table class="zui-table-highlight zui-table zui-table-horizontal borde-tabla">
                             <thead>
                                 <tr>
-                                    <th>Codigo</th>
-                                    <th>Vendedor</th>
-                                    <th>Rut</th>
+                                    <th>Codigo</th>        
                                     <th>Fecha</th>
                                     <th>Hora</th>
                                     <th>Cantidad P</th>
@@ -255,9 +253,7 @@ $admin = $this->session->userdata('admin');
                             </thead>
                             <tbody>
                                 <tr v-for='p in detallesModal'>
-                                    <td>{{p.idventa}}</td>
-                                    <td>{{p.nombre}} {{p.apellido_pat}}</td>
-                                    <td>{{p.rut}}</td>
+                                    <td>{{p.idventa}}</td>                                    
                                     <td>{{p.fecha}}</td>
                                     <td>{{p.hora}}</td>
                                     <td>{{p.cantidadP}}</td>
@@ -324,6 +320,9 @@ $admin = $this->session->userdata('admin');
                             <button class="btn black" @click="cerrarModalDetalle()">cerrar</button>
                         </div>
                     </div>
+                    
+                 <!--   <pre>{{$data}}</pre> -->
+                    
                 </div>
 
 
@@ -529,18 +528,18 @@ $admin = $this->session->userdata('admin');
                                         <div class="row no-margen">  
                                             <div class="divider"></div>
 
-                                            <div class="input-field col s6 no-marge-top">
+<!--                                            <div class="input-field col s6 no-marge-top">
                                                 <h6 class="no-margen">VENTA CON IVA</h6>                             
                                             </div>
                                             <div class="input-field col s6 no-marge-top">
                                                 <h6 class="no-margen center negra">${{ventaConIva}}</h6>                             
-                                            </div> 
-                                            <div class="input-field col s6 no-marge-top">
+                                            </div> -->
+<!--                                            <div class="input-field col s6 no-marge-top">
                                                 <h6 class="no-margen">GANANCIA</h6>                             
                                             </div> 
                                             <div class="input-field col s6 no-marge-top">
                                                 <h6 class="no-margen center negra">${{gananciaTotal}}</h6>                             
-                                            </div> 
+                                            </div> -->
                                             <div class="input-field col s6 no-marge-top">
                                                 <h6 class="no-margen">CANTIDAD DE PRODUCTOS VENDIDOS</h6>                             
                                             </div> 
@@ -594,18 +593,18 @@ $admin = $this->session->userdata('admin');
                                         <div class="row no-margen">  
                                             <div class="divider"></div>
 
-                                            <div class="input-field col s6 no-marge-top">
+<!--                                            <div class="input-field col s6 no-marge-top">
                                                 <h6 class="no-margen">VENTA CON IVA</h6>                             
                                             </div>
                                             <div class="input-field col s6 no-marge-top">
                                                 <h6 class="no-margen center negra">${{ventaConIva}}</h6>                             
-                                            </div> 
-                                            <div class="input-field col s6 no-marge-top">
+                                            </div> -->
+<!--                                            <div class="input-field col s6 no-marge-top">
                                                 <h6 class="no-margen">GANANCIA</h6>                             
                                             </div> 
                                             <div class="input-field col s6 no-marge-top">
                                                 <h6 class="no-margen center negra">${{gananciaTotal}}</h6>                             
-                                            </div> 
+                                            </div> -->
                                             <div class="input-field col s6 no-marge-top">
                                                 <h6 class="no-margen">CANTIDAD DE PRODUCTOS VENDIDOS</h6>                             
                                             </div> 
@@ -659,18 +658,18 @@ $admin = $this->session->userdata('admin');
                                         <div class="row no-margen">  
                                             <div class="divider"></div>
 
-                                            <div class="input-field col s6 no-marge-top">
+<!--                                            <div class="input-field col s6 no-marge-top">
                                                 <h6 class="no-margen">VENTA CON IVA</h6>                             
                                             </div>
                                             <div class="input-field col s6 no-marge-top">
                                                 <h6 class="no-margen center negra">${{ventaConIva}}</h6>                             
-                                            </div> 
-                                            <div class="input-field col s6 no-marge-top">
+                                            </div> -->
+<!--                                            <div class="input-field col s6 no-marge-top">
                                                 <h6 class="no-margen">GANANCIA</h6>                             
                                             </div> 
                                             <div class="input-field col s6 no-marge-top">
                                                 <h6 class="no-margen center negra">${{gananciaTotal}}</h6>                             
-                                            </div> 
+                                            </div> -->
                                             <div class="input-field col s6 no-marge-top">
                                                 <h6 class="no-margen">CANTIDAD DE PRODUCTOS VENDIDOS</h6>                             
                                             </div> 
@@ -726,18 +725,18 @@ $admin = $this->session->userdata('admin');
                                         <div class="row no-margen">  
                                             <div class="divider"></div>
 
-                                            <div class="input-field col s6 no-marge-top">
+<!--                                            <div class="input-field col s6 no-marge-top">
                                                 <h6 class="no-margen">VENTA CON IVA</h6>                             
                                             </div>
                                             <div class="input-field col s6 no-marge-top">
                                                 <h6 class="no-margen center negra">${{ventaConIva}}</h6>                             
-                                            </div> 
-                                            <div class="input-field col s6 no-marge-top">
+                                            </div> -->
+<!--                                            <div class="input-field col s6 no-marge-top">
                                                 <h6 class="no-margen">GANANCIA</h6>                             
                                             </div> 
                                             <div class="input-field col s6 no-marge-top">
                                                 <h6 class="no-margen center negra">${{gananciaTotal}}</h6>                             
-                                            </div> 
+                                            </div> -->
                                             <div class="input-field col s6 no-marge-top">
                                                 <h6 class="no-margen">CANTIDAD DE PRODUCTOS VENDIDOS</h6>                             
                                             </div> 
@@ -843,18 +842,18 @@ $admin = $this->session->userdata('admin');
                                     <div class="row no-margen">  
                                         <div class="divider"></div>
 
-                                        <div class="input-field col s6 no-marge-top">
+<!--                                        <div class="input-field col s6 no-marge-top">
                                             <h6 class="no-margen">VENTA CON IVA</h6>                             
                                         </div>
                                         <div class="input-field col s6 no-marge-top">
                                             <h6 class="no-margen center negra">${{ventaConIva}}</h6>                             
-                                        </div> 
-                                        <div class="input-field col s6 no-marge-top">
+                                        </div> -->
+<!--                                        <div class="input-field col s6 no-marge-top">
                                             <h6 class="no-margen">GANANCIA</h6>                             
                                         </div> 
                                         <div class="input-field col s6 no-marge-top">
                                             <h6 class="no-margen center negra">${{gananciaTotal}}</h6>                             
-                                        </div> 
+                                        </div> -->
                                         <div class="input-field col s6 no-marge-top">
                                             <h6 class="no-margen">CANTIDAD DE PRODUCTOS VENDIDOS</h6>                             
                                         </div> 
@@ -925,17 +924,17 @@ $admin = $this->session->userdata('admin');
                                         <div class="row no-margen">  
                                             <div class="divider"></div>
 
-                                            <div class="input-field col s6 no-marge-top">
+<!--                                            <div class="input-field col s6 no-marge-top">
                                                 <h6 class="no-margen">VENTA CON IVA</h6>                             
                                             </div>
                                             <div class="input-field col s6 no-marge-top">
                                                 <h6 class="no-margen center negra">${{ventaConIva}}</h6>                             
+                                            </div> -->
+                                            <div class="input-field col s6 no-marge-top">
+                                                <h6 class="no-margen">DESCUENTO</h6>                             
                                             </div> 
                                             <div class="input-field col s6 no-marge-top">
-                                                <h6 class="no-margen">GANANCIA</h6>                             
-                                            </div> 
-                                            <div class="input-field col s6 no-marge-top">
-                                                <h6 class="no-margen center negra">${{gananciaTotal}}</h6>                             
+                                                <h6 class="no-margen center negra">{{descuentoid}}%</h6>                             
                                             </div> 
                                             <div class="input-field col s6 no-marge-top">
                                                 <h6 class="no-margen">CANTIDAD DE PRODUCTOS VENDIDOS</h6>                             
@@ -1135,7 +1134,7 @@ $admin = $this->session->userdata('admin');
                                 <div class="row no-margen">
                                     <div class="input-field col s6">
                                         <input type="text" id="idventa" v-model="idcliente" />
-                                        <label class="active" for="idventa">Id cliente</label>
+                                        <label class="active" for="idventa">Rut cliente</label>
                                     </div>
                                     <div class="input-field col s6">
                                         <button class="btn blue ancho-total" @click="modalBuscarCliente()">Buscar Cliente</button>
@@ -1192,14 +1191,14 @@ $admin = $this->session->userdata('admin');
                                 <div class="row no-margen">  
                                     <div class="divider"></div>
 
-                                    <div class="input-field col s6 no-marge-top">
+<!--                                    <div class="input-field col s6 no-marge-top">
                                         <h6 class="no-margen">VENTA CON IVA</h6>                             
                                     </div>
                                     <div class="input-field col s6 no-marge-top">
                                         <h6 class="no-margen center negra">${{ventaConIva}}</h6>                             
-                                    </div> 
-
-                                    <div class="divider"></div>
+                                    </div> -->
+<!--
+                                    <div class="divider"></div>-->
                                 </div>
 
                                 <table class="zui-table-highlight zui-table zui-table-horizontal borde-tabla">
@@ -1246,7 +1245,7 @@ $admin = $this->session->userdata('admin');
 
             </main>
 
-<!--            <pre>{{$data}}</pre>-->
+          <pre>{{$data}}</pre>
         </div>
 
         <script type="text/javascript" src="<?= base_url() ?>assets/js/jquery-3.2.1.min.js" ></script> 

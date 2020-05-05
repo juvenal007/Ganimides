@@ -248,7 +248,7 @@ class ventas extends CI_Controller {
             $res = 'ERROR VENTA YA PROCESADA';
         } else {
             if (isset($codigo)) {
-                if($venta[0]->tipo == "Guia"){
+                if($venta[0]->tipo == "GUIA"){
                     $this->Crud->terminarVentaGuia($codigo);
                     $res = 'VENTA COMPLETADA'; 
                 }else{
@@ -260,6 +260,36 @@ class ventas extends CI_Controller {
                 $res = 'Error de datos';
             }
         }
+        echo json_encode(array('value' => $res));
+    }
+    
+        public function terminarVentaGuia() {
+
+        $codigo = $this->input->post('codigo');
+
+        $venta = $this->Crud->buscarVentasBoleta($codigo);
+
+        $estado = $venta[0]->estado;
+        $hora = strftime("%H:%M:%S", time());
+//        $res = $hora;
+
+        if ($venta[0]->tipo == "GUIA") {
+
+            if ($estado == 'FINALIZADA') {
+                $res = 'ERROR VENTA YA PROCESADA';
+            } else {
+                if (isset($codigo)) {
+                    $this->Crud->terminarVentaBoleta($codigo);
+                    $res = 'VENTA COMPLETADA';
+                } else {
+                    $res = 'Error de datos';
+                }
+            }
+        } else {
+            $res = "Guia Procesada";
+        }
+
+
         echo json_encode(array('value' => $res));
     }
 

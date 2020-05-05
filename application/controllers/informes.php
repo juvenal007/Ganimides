@@ -35,8 +35,6 @@ class informes extends CI_Controller {
         $cont = $this->Crud->getFechaAnualContar($ano);
 
 
-
-
         $producto = $this->Crud->detalleVentaProductoAno($ano);
 
 
@@ -169,8 +167,10 @@ class informes extends CI_Controller {
         $idfactura = $this->input->post('idfactura');
 
         if (isset($idfactura)) {
+            
+            $facturaID = $this->Crud->getFacturaId($idfactura);
             $factura = $this->Crud->buscarFacturaId($idfactura);
-            $detalle = $this->Crud->buscarFacturaDetalleId($idfactura);
+            $detalle = $this->Crud->buscarFacturaDetalleId($factura[0]->idfactura);
         } else {
             $res = 'Error de datos';
         }
@@ -289,7 +289,7 @@ class informes extends CI_Controller {
         $idguia = $this->input->post('idguia');
         
         if (isset($idguia)) {
-            $guia = $this->Crud->buscarVentasBoleta($idguia);
+            $guia = $this->Crud->buscarVentasGuia($idguia);
             $res = $guia[0];
         }else{
             $res = 'Error de datos';

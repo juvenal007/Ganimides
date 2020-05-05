@@ -113,7 +113,7 @@ class Crud extends CI_Model {
         return $this->db->insert('marca', $datos);
     }
 
-    public function insertarProducto($nombre, $stock, $descripcion, $p_venta, $p_compra, $iva, $categoria_idcategoria, $usuario_idusuario, $marca_idmarca, $p_ventaconiva) {
+    public function insertarProducto($nombre, $stock, $descripcion, $p_venta, $p_compra, $iva, $categoria_idcategoria, $usuario_idusuario, $marca_idmarca, $p_ventaconiva, $stock_minimo) {
         $fecha = strftime("%Y-%m-%d", time());
         $datos = array(
             'codigo' => '',
@@ -124,6 +124,7 @@ class Crud extends CI_Model {
             'p_venta' => $p_venta,
             'p_compra' => $p_compra,
             'activo' => 'si',
+            'stock_minimo' => $stock_minimo,
             'iva' => $iva,
             'fecha_ingreso' => $fecha,
             'categoria_idcategoria' => $categoria_idcategoria,
@@ -169,7 +170,7 @@ class Crud extends CI_Model {
             'fecha' => $fecha,
             'hora' => $hora,
             'estado' => $estado,
-            'medio_pago' => $medio_pago,
+            'medio_pago' => "MEDIO PAGO",
             'descuento' => $descuento,
             'usuario_idusuario' => $idusuario,
             'tipo' => $tipo,
@@ -181,9 +182,9 @@ class Crud extends CI_Model {
     public function insertarVentaBoletaGuia($total, $descuento, $idusuario, $nguia, $idcliente, $descripcion) {
         $fecha = strftime("%Y-%m-%d", time());
         $hora = strftime("%H:%M:%S", time());
-        $medio_pago = 'MEDIO PAGO';
+        $medio_pago = 'CREDITO';
         $estado = 'En Tramite';
-        $boleta = 'Guia';
+        $boleta = 'GUIA';
 
         $datos = array(
             'total' => $total,
@@ -279,6 +280,22 @@ class Crud extends CI_Model {
         return $this->db->get('producto')->result();
     }
 
+    public function obtenerFactura($idFactura) {
+        $this->db->where('idfactura', $idFactura);
+        return $this->db->get('factura')->result();
+    }
+
+//    public function obtenerProducto($idproducto) {
+//        $this->db->where('idproducto', $idproducto);
+//        return $this->db->get('producto')->result();
+//    }
+
+    public function obtenerProductoNombre($nombreProducto) {
+        $query = ('SELECT * FROM producto WHERE nombre LIKE "%' . $nombreProducto . '%";');
+        $res = $this->db->query($query);
+        return $res->result();
+    }
+
     public function terminarVentaBoleta($codigo) {
         $datos = array(
             'estado' => 'FINALIZADA'
@@ -286,7 +303,8 @@ class Crud extends CI_Model {
         $this->db->where('idventa', $codigo);
         return $this->db->update('venta', $datos);
     }
-        public function terminarVentaGuia($codigo) {
+
+    public function terminarVentaGuia($codigo) {
         $datos = array(
             'estado' => 'En Tramite'
         );
@@ -387,7 +405,7 @@ class Crud extends CI_Model {
         return $this->db->update('producto', $datos);
     }
 
-    public function actualizarProducto($nombre, $stock, $descripcion, $p_venta, $p_compra, $iva, $categoria_idcategoria, $usuario_idusuario, $marca_idmarca, $p_ventaconiva, $id) {
+    public function actualizarProducto($nombre, $stock, $descripcion, $p_venta, $p_compra, $iva, $categoria_idcategoria, $usuario_idusuario, $marca_idmarca, $p_ventaconiva, $id, $stock_minimo) {
 
 
         $datos = array(
@@ -399,6 +417,7 @@ class Crud extends CI_Model {
             'p_venta' => $p_venta,
             'p_compra' => $p_compra,
             'iva' => $iva,
+            'stock_minimo' => $stock_minimo,
             'categoria_idcategoria' => $categoria_idcategoria,
             'usuario_idusuario' => $usuario_idusuario,
             'marca_idmarca' => $marca_idmarca,
@@ -454,9 +473,19 @@ class Crud extends CI_Model {
         return $this->db->get("venta")->result();
     }
 
+    public function buscarVentasGuia($nguia) {
+        $this->db->where('nguia', $nguia);
+        return $this->db->get("venta")->result();
+    }
+
     public function buscarDetalleVenta($idventa) {
         $this->db->where('venta_idventa', $idventa);
         return $this->db->get("detalle_venta")->result();
+    }
+
+    public function buscarDetalleFactura($idfactura) {
+        $this->db->where('factura_idfactura', $idfactura);
+        return $this->db->get("producto_factura")->result();
     }
 
     public function getFechaAnual($ano) {
@@ -579,19 +608,35 @@ class Crud extends CI_Model {
         return $res->result();
     }
 
+    public function eliminarBoletaDetalle($idventa) {
+        $this->db->where('venta_idventa', $idventa);
+        return $this->db->delete('detalle_venta');
+    }
+
+    public function eliminarBoleta($idventa) {
+        $this->db->where('idventa', $idventa);
+        return $this->db->delete('venta');
+    }
+
+    public function eliminarFacturaDetalle($idfactura) {
+        $this->db->where('factura_idfactura', $idfactura);
+        return $this->db->delete('producto_factura');
+    }
+
     public function eliminarFactura($idfactura) {
         $this->db->where('idfactura', $idfactura);
-        $datos = array(
-            'activo' => 'no'
-        );
-
-        return $this->db->update('factura', $datos);
+        return $this->db->delete('factura');
     }
 
     public function buscarFacturaId($idfactura) {
-        $query = ('SELECT * FROM factura INNER JOIN proveedor on factura.proveedor_idproveedor = proveedor.idproveedor WHERE (factura.activo = "si") AND (idfactura = "' . $idfactura . '")');
+        $query = ('SELECT * FROM factura INNER JOIN proveedor on factura.proveedor_idproveedor = proveedor.idproveedor WHERE (factura.activo = "si") AND (codigo = "' . $idfactura . '")');
         $res = $this->db->query($query);
         return $res->result();
+    }
+
+    public function getFacturaId($idfactura) {
+        $this->db->where('codigo', $idfactura);
+        return $this->db->get("factura")->result();
     }
 
     public function buscarFacturaDetalleId($idfactura) {
@@ -633,41 +678,42 @@ class Crud extends CI_Model {
     }
 
     public function getMesGuia($ano, $mes) {
-        $query = 'SELECT *, usuario.nombre AS usuario_nombre, usuario.rut AS usuario_rut, usuario.apellido_pat AS usuario_apellido_pat, venta.tipo AS venta_tipo, cliente.nombre AS cliente_nombre, cliente.apellido_pat AS cliente_apellido_pat, cliente.direccion AS cliente_direccion, cliente.telefono AS cliente_telefono, cliente.rut AS cliente_rut FROM venta INNER JOIN cliente on venta.cliente_idcliente = cliente.idcliente INNER JOIN usuario on venta.usuario_idusuario = usuario.idusuario WHERE (fecha BETWEEN"' . $ano . $mes . '01" AND "' . $ano . $mes . '31") AND (hora BETWEEN "000000" AND "235959") AND (venta.tipo = "Guia") ORDER BY idventa desc';
+        $query = 'SELECT *, usuario.nombre AS usuario_nombre, usuario.rut AS usuario_rut, usuario.apellido_pat AS usuario_apellido_pat, venta.tipo AS venta_tipo, cliente.nombre AS cliente_nombre, cliente.apellido_pat AS cliente_apellido_pat, cliente.direccion AS cliente_direccion, cliente.telefono AS cliente_telefono, cliente.rut AS cliente_rut FROM venta INNER JOIN cliente on venta.cliente_idcliente = cliente.idcliente INNER JOIN usuario on venta.usuario_idusuario = usuario.idusuario WHERE (fecha BETWEEN"' . $ano . $mes . '01" AND "' . $ano . $mes . '31") AND (hora BETWEEN "000000" AND "235959") AND (venta.tipo = "GUIA") ORDER BY idventa desc';
         // $query = 'SELECT * FROM venta WHERE (fecha BETWEEN "20190101" AND "20191231")';
         $res = $this->db->query($query);
         return $res->result();
     }
 
     public function getMesGuiaRut($ano, $mes, $idcliente) {
-        $query = 'SELECT *, usuario.nombre AS usuario_nombre, usuario.rut AS usuario_rut, usuario.apellido_pat AS usuario_apellido_pat, venta.tipo AS venta_tipo, cliente.nombre AS cliente_nombre, cliente.apellido_pat AS cliente_apellido_pat, cliente.direccion AS cliente_direccion, cliente.telefono AS cliente_telefono, cliente.rut AS cliente_rut FROM venta INNER JOIN cliente on venta.cliente_idcliente = cliente.idcliente INNER JOIN usuario on venta.usuario_idusuario = usuario.idusuario WHERE (fecha BETWEEN"' . $ano . $mes . '01" AND "' . $ano . $mes . '31") AND (hora BETWEEN "000000" AND "235959") AND (venta.tipo = "Guia") AND (cliente.idcliente = "' . $idcliente . '")ORDER BY idventa desc';
+        $query = 'SELECT *, usuario.nombre AS usuario_nombre, usuario.rut AS usuario_rut, usuario.apellido_pat AS usuario_apellido_pat, venta.tipo AS venta_tipo, cliente.nombre AS cliente_nombre, cliente.apellido_pat AS cliente_apellido_pat, cliente.direccion AS cliente_direccion, cliente.telefono AS cliente_telefono, cliente.rut AS cliente_rut FROM venta INNER JOIN cliente on venta.cliente_idcliente = cliente.idcliente INNER JOIN usuario on venta.usuario_idusuario = usuario.idusuario WHERE (fecha BETWEEN"' . $ano . $mes . '01" AND "' . $ano . $mes . '31") AND (hora BETWEEN "000000" AND "235959") AND (venta.tipo = "GUIA") AND (cliente.rut = "' . $idcliente . '")ORDER BY idventa desc';
         // $query = 'SELECT * FROM venta WHERE (fecha BETWEEN "20190101" AND "20191231")';
         $res = $this->db->query($query);
         return $res->result();
     }
 
     public function getDiaGuia($ano, $mes, $dia) {
-        $query = 'SELECT *, usuario.nombre AS usuario_nombre, usuario.rut AS usuario_rut, usuario.apellido_pat AS usuario_apellido_pat, venta.tipo AS venta_tipo, cliente.nombre AS cliente_nombre, cliente.apellido_pat AS cliente_apellido_pat, cliente.direccion AS cliente_direccion, cliente.telefono AS cliente_telefono, cliente.rut AS cliente_rut FROM venta INNER JOIN cliente on venta.cliente_idcliente = cliente.idcliente INNER JOIN usuario on venta.usuario_idusuario = usuario.idusuario WHERE (fecha BETWEEN"' . $ano . $mes . $dia . '" AND "' . $ano . $mes . $dia . '") AND (hora BETWEEN "000000" AND "235959") AND (venta.tipo = "Guia") ORDER BY idventa desc';
+        $query = 'SELECT *, usuario.nombre AS usuario_nombre, usuario.rut AS usuario_rut, usuario.apellido_pat AS usuario_apellido_pat, venta.tipo AS venta_tipo, cliente.nombre AS cliente_nombre, cliente.apellido_pat AS cliente_apellido_pat, cliente.direccion AS cliente_direccion, cliente.telefono AS cliente_telefono, cliente.rut AS cliente_rut FROM venta INNER JOIN cliente on venta.cliente_idcliente = cliente.idcliente INNER JOIN usuario on venta.usuario_idusuario = usuario.idusuario WHERE (fecha BETWEEN"' . $ano . $mes . $dia . '" AND "' . $ano . $mes . $dia . '") AND (hora BETWEEN "000000" AND "235959") AND (venta.tipo = "GUIA") ORDER BY idventa desc';
         // $query = 'SELECT * FROM venta WHERE (fecha BETWEEN "20190101" AND "20191231")';
         $res = $this->db->query($query);
         return $res->result();
     }
 
     public function getDiaGuiaRut($ano, $mes, $dia, $idcliente) {
-        $query = 'SELECT *, usuario.nombre AS usuario_nombre, usuario.rut AS usuario_rut, usuario.apellido_pat AS usuario_apellido_pat, venta.tipo AS venta_tipo, cliente.nombre AS cliente_nombre, cliente.apellido_pat AS cliente_apellido_pat, cliente.direccion AS cliente_direccion, cliente.telefono AS cliente_telefono, cliente.rut AS cliente_rut FROM venta INNER JOIN cliente on venta.cliente_idcliente = cliente.idcliente INNER JOIN usuario on venta.usuario_idusuario = usuario.idusuario WHERE (fecha BETWEEN"' . $ano . $mes . $dia . '" AND "' . $ano . $mes . $dia . '") AND (hora BETWEEN "000000" AND "235959") AND (venta.tipo = "Guia") AND (cliente.idcliente = "' . $idcliente . '") ORDER BY idventa desc';
+        $query = 'SELECT *, usuario.nombre AS usuario_nombre, usuario.rut AS usuario_rut, usuario.apellido_pat AS usuario_apellido_pat, venta.tipo AS venta_tipo, cliente.nombre AS cliente_nombre, cliente.apellido_pat AS cliente_apellido_pat, cliente.direccion AS cliente_direccion, cliente.telefono AS cliente_telefono, cliente.rut AS cliente_rut FROM venta INNER JOIN cliente on venta.cliente_idcliente = cliente.idcliente INNER JOIN usuario on venta.usuario_idusuario = usuario.idusuario WHERE (fecha BETWEEN"' . $ano . $mes . $dia . '" AND "' . $ano . $mes . $dia . '") AND (hora BETWEEN "000000" AND "235959") AND (venta.tipo = "GUIA") AND (cliente.rut = "' . $idcliente . '") ORDER BY idventa desc';
         // $query = 'SELECT * FROM venta WHERE (fecha BETWEEN "20190101" AND "20191231")';
         $res = $this->db->query($query);
         return $res->result();
     }
 
     public function getGuiaFecha($ano1, $mes1, $dia1, $ano2, $mes2, $dia2) {
-        $query = 'SELECT *, usuario.nombre AS usuario_nombre, usuario.rut AS usuario_rut, usuario.apellido_pat AS usuario_apellido_pat, venta.tipo AS venta_tipo, cliente.nombre AS cliente_nombre, cliente.apellido_pat AS cliente_apellido_pat, cliente.direccion AS cliente_direccion, cliente.telefono AS cliente_telefono, cliente.rut AS cliente_rut FROM venta INNER JOIN cliente on venta.cliente_idcliente = cliente.idcliente INNER JOIN usuario on venta.usuario_idusuario = usuario.idusuario WHERE (fecha BETWEEN"' . $ano1 . $mes1 . $dia1 . '" AND "' . $ano2 . $mes2 . $dia2 . '") AND (hora BETWEEN "000000" AND "235959") AND (venta.tipo = "Guia") ORDER BY idventa desc';
+        $query = 'SELECT *, usuario.nombre AS usuario_nombre, usuario.rut AS usuario_rut, usuario.apellido_pat AS usuario_apellido_pat, venta.tipo AS venta_tipo, cliente.nombre AS cliente_nombre, cliente.apellido_pat AS cliente_apellido_pat, cliente.direccion AS cliente_direccion, cliente.telefono AS cliente_telefono, cliente.rut AS cliente_rut FROM venta INNER JOIN cliente on venta.cliente_idcliente = cliente.idcliente INNER JOIN usuario on venta.usuario_idusuario = usuario.idusuario WHERE (fecha BETWEEN"' . $ano1 . $mes1 . $dia1 . '" AND "' . $ano2 . $mes2 . $dia2 . '") AND (hora BETWEEN "000000" AND "235959") AND (venta.tipo = "GUIA") ORDER BY idventa desc';
         // $query = 'SELECT * FROM venta WHERE (fecha BETWEEN "20190101" AND "20191231")';
         $res = $this->db->query($query);
         return $res->result();
     }
+
     public function getGuiaFechaRut($ano1, $mes1, $dia1, $ano2, $mes2, $dia2, $idcliente) {
-        $query = 'SELECT *, usuario.nombre AS usuario_nombre, usuario.rut AS usuario_rut, usuario.apellido_pat AS usuario_apellido_pat, venta.tipo AS venta_tipo, cliente.nombre AS cliente_nombre, cliente.apellido_pat AS cliente_apellido_pat, cliente.direccion AS cliente_direccion, cliente.telefono AS cliente_telefono, cliente.rut AS cliente_rut FROM venta INNER JOIN cliente on venta.cliente_idcliente = cliente.idcliente INNER JOIN usuario on venta.usuario_idusuario = usuario.idusuario WHERE (fecha BETWEEN"' . $ano1 . $mes1 . $dia1 . '" AND "' . $ano2 . $mes2 . $dia2 . '") AND (hora BETWEEN "000000" AND "235959") AND (venta.tipo = "Guia") AND (cliente.idcliente = "' . $idcliente . '") ORDER BY idventa desc';
+        $query = 'SELECT *, usuario.nombre AS usuario_nombre, usuario.rut AS usuario_rut, usuario.apellido_pat AS usuario_apellido_pat, venta.tipo AS venta_tipo, cliente.nombre AS cliente_nombre, cliente.apellido_pat AS cliente_apellido_pat, cliente.direccion AS cliente_direccion, cliente.telefono AS cliente_telefono, cliente.rut AS cliente_rut FROM venta INNER JOIN cliente on venta.cliente_idcliente = cliente.idcliente INNER JOIN usuario on venta.usuario_idusuario = usuario.idusuario WHERE (fecha BETWEEN"' . $ano1 . $mes1 . $dia1 . '" AND "' . $ano2 . $mes2 . $dia2 . '") AND (hora BETWEEN "000000" AND "235959") AND (venta.tipo = "GUIA") AND (cliente.rut = "' . $idcliente . '") ORDER BY idventa desc';
         // $query = 'SELECT * FROM venta WHERE (fecha BETWEEN "20190101" AND "20191231")';
         $res = $this->db->query($query);
         return $res->result();
