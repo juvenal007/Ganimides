@@ -114,6 +114,7 @@ $route['terminar-compra-boleta-detalle'] = 'ventas/buscarVentasBoletaDetalle';
 $route['terminar-compra-boleta-detalle2'] = 'ventas/buscarVentasBoletaDetalle2';
 $route['finalizar-venta-boleta'] = 'ventas/terminarVentaBoleta';
 $route['finalizar-venta-guia'] = 'ventas/terminarVentaGuia';
+$route['agregar-guia-sii'] = 'ventas/agregarGuiaSii';
 $route['lista-venta-boleta'] = 'ventas/ventaList';
 $route['anular-venta-boleta'] = 'ventas/anularVentaBoleta';
 $route['contar-productos-detalle'] = 'ventas/totalProductosDetalle';
@@ -121,6 +122,8 @@ $route['buscar-ventas-boleta-detalle'] = 'ventas/buscarVentasBoletaDetalle';
 $route['buscar-producto'] = 'ventas/buscarProductoNombre';
 $route['buscar-cliente-rut'] = 'ventas/buscarClienteRut';
 $route['contar-finalizadas'] = 'ventas/contadorFinalizadas';
+
+$route['generarPDF/(:num)'] = 'control/generarPDF/$1';
 
 //INFORMES
 $route['informe'] = 'vista/informe';

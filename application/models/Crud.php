@@ -15,6 +15,14 @@ defined('BASEPATH') OR exit('No direct script access allowed');
  */
 class Crud extends CI_Model {
 
+    public $venta, $detalle_venta;
+
+    public function __construct() {
+        parent::__construct();
+        $this->venta = "venta";
+        $this->detalle_venta = "detalle_venta";
+    }
+
     // *****************************************************
     // INSERTAR
     // *****************************************************
@@ -113,7 +121,7 @@ class Crud extends CI_Model {
         return $this->db->insert('marca', $datos);
     }
 
-    public function insertarProducto($nombre, $stock, $descripcion, $p_venta, $p_compra, $iva, $categoria_idcategoria, $usuario_idusuario, $marca_idmarca, $p_ventaconiva, $stock_minimo) {
+    public function insertarProducto($nombre, $stock, $descripcion, $p_venta, $p_compra, $iva, $categoria_idcategoria, $usuario_idusuario, $marca_idmarca, $p_ventaconiva) {
         $fecha = strftime("%Y-%m-%d", time());
         $datos = array(
             'codigo' => '',
@@ -123,8 +131,7 @@ class Crud extends CI_Model {
             'descripcion' => $descripcion,
             'p_venta' => $p_venta,
             'p_compra' => $p_compra,
-            'activo' => 'si',
-            'stock_minimo' => $stock_minimo,
+            'activo' => 'si',            
             'iva' => $iva,
             'fecha_ingreso' => $fecha,
             'categoria_idcategoria' => $categoria_idcategoria,
@@ -405,7 +412,7 @@ class Crud extends CI_Model {
         return $this->db->update('producto', $datos);
     }
 
-    public function actualizarProducto($nombre, $stock, $descripcion, $p_venta, $p_compra, $iva, $categoria_idcategoria, $usuario_idusuario, $marca_idmarca, $p_ventaconiva, $id, $stock_minimo) {
+    public function actualizarProducto($nombre, $stock, $descripcion, $p_venta, $p_compra, $iva, $categoria_idcategoria, $usuario_idusuario, $marca_idmarca, $p_ventaconiva, $id) {
 
 
         $datos = array(
@@ -416,8 +423,7 @@ class Crud extends CI_Model {
             'descripcion' => $descripcion,
             'p_venta' => $p_venta,
             'p_compra' => $p_compra,
-            'iva' => $iva,
-            'stock_minimo' => $stock_minimo,
+            'iva' => $iva,           
             'categoria_idcategoria' => $categoria_idcategoria,
             'usuario_idusuario' => $usuario_idusuario,
             'marca_idmarca' => $marca_idmarca,
@@ -489,7 +495,7 @@ class Crud extends CI_Model {
     }
 
     public function getFechaAnual($ano) {
-        $query = 'SELECT * FROM venta INNER JOIN usuario on venta.usuario_idusuario = usuario.idusuario WHERE (fecha BETWEEN"' . $ano . '0101" AND "' . $ano . '1231") AND (estado = "FINALIZADA") AND (hora BETWEEN "000000" AND "595959") ORDER BY idventa desc';
+        $query = 'SELECT *, venta.tipo AS ventaTipo FROM venta INNER JOIN usuario on venta.usuario_idusuario = usuario.idusuario WHERE (fecha BETWEEN"' . $ano . '0101" AND "' . $ano . '1231") AND (estado = "FINALIZADA") AND (hora BETWEEN "000000" AND "595959") ORDER BY idventa desc';
         // $query = 'SELECT * FROM venta WHERE (fecha BETWEEN "20190101" AND "20191231")';
         $res = $this->db->query($query);
         return $res->result();
@@ -516,7 +522,7 @@ class Crud extends CI_Model {
     }
 
     public function getMes($ano, $mes) {
-        $query = 'SELECT * FROM venta INNER JOIN usuario on venta.usuario_idusuario = usuario.idusuario WHERE (fecha BETWEEN"' . $ano . $mes . '01" AND "' . $ano . $mes . '31") AND (estado = "FINALIZADA") AND (hora BETWEEN "000000" AND "235959") ORDER BY idventa desc';
+        $query = 'SELECT *, venta.tipo AS ventaTipo FROM venta INNER JOIN usuario on venta.usuario_idusuario = usuario.idusuario WHERE (fecha BETWEEN"' . $ano . $mes . '01" AND "' . $ano . $mes . '31") AND (estado = "FINALIZADA") AND (hora BETWEEN "000000" AND "235959") ORDER BY idventa desc';
         // $query = 'SELECT * FROM venta WHERE (fecha BETWEEN "20190101" AND "20191231")';
         $res = $this->db->query($query);
         return $res->result();
@@ -531,7 +537,7 @@ class Crud extends CI_Model {
     }
 
     public function getDia($ano, $mes, $dia) {
-        $query = 'SELECT * FROM venta INNER JOIN usuario on venta.usuario_idusuario = usuario.idusuario WHERE (fecha BETWEEN"' . $ano . $mes . $dia . '" AND "' . $ano . $mes . $dia . '") AND (estado = "FINALIZADA") AND (hora BETWEEN "000000" AND "235959") ORDER BY idventa desc';
+        $query = 'SELECT *, venta.tipo AS ventaTipo FROM venta INNER JOIN usuario on venta.usuario_idusuario = usuario.idusuario WHERE (fecha BETWEEN"' . $ano . $mes . $dia . '" AND "' . $ano . $mes . $dia . '") AND (estado = "FINALIZADA") AND (hora BETWEEN "000000" AND "235959") ORDER BY idventa desc';
         // $query = 'SELECT * FROM venta WHERE (fecha BETWEEN "20190101" AND "20191231")';
         $res = $this->db->query($query);
         return $res->result();
@@ -546,7 +552,7 @@ class Crud extends CI_Model {
     }
 
     public function getFecha($ano1, $mes1, $dia1, $ano2, $mes2, $dia2) {
-        $query = 'SELECT * FROM venta INNER JOIN usuario on venta.usuario_idusuario = usuario.idusuario WHERE fecha BETWEEN"' . $ano1 . $mes1 . $dia1 . '" AND "' . $ano2 . $mes2 . $dia2 . '" AND (estado = "FINALIZADA") AND (hora BETWEEN "000000" AND "235959") ORDER BY idventa desc';
+        $query = 'SELECT *, venta.tipo AS ventaTipo FROM venta INNER JOIN usuario on venta.usuario_idusuario = usuario.idusuario WHERE fecha BETWEEN"' . $ano1 . $mes1 . $dia1 . '" AND "' . $ano2 . $mes2 . $dia2 . '" AND (estado = "FINALIZADA") AND (hora BETWEEN "000000" AND "235959") ORDER BY idventa desc';
         // $query = 'SELECT * FROM venta WHERE (fecha BETWEEN "20190101" AND "20191231")';
         $res = $this->db->query($query);
         return $res->result();
@@ -717,6 +723,25 @@ class Crud extends CI_Model {
         // $query = 'SELECT * FROM venta WHERE (fecha BETWEEN "20190101" AND "20191231")';
         $res = $this->db->query($query);
         return $res->result();
+    }
+
+    public function getVenta($idventa) {
+        $this->db->where('idventa', $idventa);
+        return $this->db->get($this->venta)->result();
+    }
+
+    public function getProductos($idventa) {
+        $this->db->join('producto', 'producto.idproducto = detalle_venta.producto_idproducto');
+        $this->db->where('venta_idventa', $idventa);
+        return $this->db->get($this->detalle_venta)->result();
+    }
+    
+    public function agregarGuiaSii($idventa, $nGuiaSii){
+          $datos = array(          
+            'nguia_sii' => $nGuiaSii            
+        );
+        $this->db->where('idventa', $idventa);
+        return $this->db->update($this->venta, $datos);
     }
 
 }

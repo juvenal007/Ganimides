@@ -1,11 +1,18 @@
 <?php
+
 defined('BASEPATH') OR exit('No direct script access allowed');
+
+require_once APPPATH . "/third_party/dompdf/autoload.inc.php";
+
+use Dompdf\Dompdf;
+use Dompdf\Options;
 
 class control extends CI_Controller {
 
     public function __construct() {
         parent::__construct();
         $this->load->model('Crud');
+        $this->load->model('Pdf');
     }
 
     public function index() {
@@ -84,7 +91,7 @@ class control extends CI_Controller {
         if (isset($idusuario) && isset($pregunta)) {
             $this->Crud->activo($idusuario, $pregunta);
             $resp = "USUARIO ACTIVADO EXITOSAMENTE";
-            $ruta = base_url('menu-user');            
+            $ruta = base_url('menu-user');
         } else {
             $resp = "Ingrese datos";
         }
@@ -107,6 +114,62 @@ class control extends CI_Controller {
     public function logout() {
         $this->session->sess_destroy();
         redirect('control');
+    }
+
+    public function generarPDF($idventa) {
+
+        $fecha = new DateTime();
+
+        $fechaDocu = $fecha->format('Y-m-d H:i:s');
+
+        $options = new Options();
+        $options->set('isJavascriptEnabled', TRUE);
+        $options->set('isRemoteEnabled', TRUE);
+        $pdf = new Dompdf($options);
+
+//        echo json_encode(array('documento' => $documento));
+
+
+    
+
+
+        $venta = $this->Crud->getVenta($idventa);
+        $productos = $this->Crud->getProductos($idventa);
+//        $cantidadProductos = $this->Crud->contarProductosDetalle($idventa);
+//        $ultimoArchivo = $this->Modelo->getArchivo($documento[0]->iddocumento);
+//        $ultimoArchivo = end($ultimoArchivo);
+//
+//        $docu_tipo = strtoupper($documento[0]->docu_tipo);
+//
+        $ruta = $venta[0]->tipo . "-" . $venta[0]->idventa;
+
+
+//        $path = 'http://localhost/repoEstado/Barcode/barcode_generator/Code128b/30/' . $ruta . '/true';
+//        $type = pathinfo($path, PATHINFO_EXTENSION);
+//        $data = file_get_contents($path);
+//        $base64 = 'data:image/' . $type . ';base64,' . base64_encode($data);
+
+
+        $data = array(
+//            'departamento' => $departamento[0],
+              'venta' => $venta[0],
+              'productos' => $productos,
+//              'cantidadProductos' => $cantidadProductos,
+//            'nombreDocumento' => 'MEMORANDO',
+//            'archivo' => $ultimoArchivo,
+//            'documento' => $documento[0],
+//            'base64' => $base64,
+//            'codigo' => $ruta
+        );
+        $this->load->view('comprobanteDocumento', $data);
+
+        $html = $this->output->get_output(['isRemoteEnabled' => true]);
+        $this->load->library('Pdf');
+        $pdf->loadHtml($html);
+        $pdf->setPaper('letter', 'portrait');
+        $pdf->render();
+        // Output the generated PDF (1 = download and 0 = preview)
+        $pdf->stream($ruta . '-' . $fechaDocu, array("Attachment" => 0));
     }
 
 }

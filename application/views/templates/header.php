@@ -33,8 +33,8 @@
                         <li class="bold"><a href="<?= base_url('menu-user'); ?>"class="collapsible-header waves-effect waves-green green-text"><i class="material-icons green-text">home</i>HOME<i class="material-icons right">keyboard_arrow_right</i></a></li>
                         <li><div class="divider divider-lateral"></div></li>
                         <li class="bold"><a href="<?= base_url('venta') ?>" class="collapsible-header waves-effect waves-red red-text"><i class="material-icons red-text">shopping_cart</i>VENTAS<i class="material-icons right">keyboard_arrow_right</i></a></li>
-                        <li v-if="sesion[0].tipo == 'admin' || sesion[0].tipo == 'caja'"><div class="divider divider-lateral"></div></li>
-                        <li v-if="sesion[0].tipo == 'admin' || sesion[0].tipo == 'caja'" class="bold"><a href="<?= base_url('compra'); ?>"class="collapsible-header waves-effect waves-grey black-text"><i class="material-icons">add_circle</i>COMPRAS<i class="material-icons right">keyboard_arrow_right</i></a></li>
+<!--                        <li v-if="sesion[0].tipo == 'admin' || sesion[0].tipo == 'caja'"><div class="divider divider-lateral"></div></li>
+                        <li v-if="sesion[0].tipo == 'admin' || sesion[0].tipo == 'caja'" class="bold"><a href="<?= base_url('compra'); ?>"class="collapsible-header waves-effect waves-grey black-text"><i class="material-icons">add_circle</i>COMPRAS<i class="material-icons right">keyboard_arrow_right</i></a></li>-->
                         <li><div class="divider divider-lateral"></div></li>
                         <li class="bold"><a href="<?= base_url('inventario') ?>"class="collapsible-header waves-effect waves-grey"><i class="material-icons">clear_all</i>INVENTARIO<i class="material-icons right">keyboard_arrow_right</i></a></li>
                         <li v-if="sesion[0].tipo == 'admin'"><div class="divider divider-lateral"></div></li>

@@ -1,6 +1,7 @@
 new Vue({
     el: '#newapp',
     data: {
+        nombreCliente: '',
         descripcion: '',
         rutCliente: '',
         buscarProducto: '',
@@ -52,10 +53,65 @@ new Vue({
         detalleProductosModal: [],
         totalU: 0,
         clienteCargar: {},
-        comboCliente: [],
+        clientes: [],
         nuevoDetalle: {}
     },
     methods: {
+
+        iniciarEnter: function (event) {
+            // who caused it? "event.target.id"
+            // console.log('keyup from id: ' + event.target.id)
+            // what was pressed?
+            let keyMessage = 'keyup: ';
+            if (event.key == "Enter") {
+                //  console.log("enter"); AL PRESIONAR TECLA EN EL PASSWORD ACTIVA EL METODO 
+                this.cargarModalProducto();
+            }
+        },
+        iniciarCantidad: function (event) {
+            // who caused it? "event.target.id"
+            // console.log('keyup from id: ' + event.target.id)
+            // what was pressed?
+            let keyMessage = 'keyup: ';
+            if (event.key == "Enter") {
+                //  console.log("enter"); AL PRESIONAR TECLA EN EL PASSWORD ACTIVA EL METODO 
+                this.cargarModalCantidad(this.cantidad);
+            }
+        },
+        iniciarBuscarCliente: function (event) {
+            // who caused it? "event.target.id"
+            // console.log('keyup from id: ' + event.target.id)
+            // what was pressed?
+            let keyMessage = 'keyup: ';
+            if (event.key == "Enter") {
+                //  console.log("enter"); AL PRESIONAR TECLA EN EL PASSWORD ACTIVA EL METODO 
+                this.cargarModalCliente();
+            }
+        },
+
+        agregarClienteGuia: function (p) {
+            this.clienteCargar = p;
+            this.cliente = this.clienteCargar.idcliente;
+            this.cerrarModalCliente();
+            document.getElementById("productoBus").focus();
+
+        },
+        cargarModalCliente: function () {
+
+            this.nombreCliente = '';
+            this.getClientes();
+            var elems = document.querySelector('#modalCliente');
+            var instance = M.Modal.init(elems);
+            instance.open();
+            document.getElementById("buscarCliente").focus();
+
+        },
+
+        cerrarModalCliente: function () {
+            var elems = document.querySelector('#modalCliente');
+            var instance = M.Modal.getInstance(elems);
+            instance.close();
+        },
 
         eliminarProductoAgregado: function (p) {
 
@@ -130,7 +186,7 @@ new Vue({
         getClientes: function () {
             url = this.path + 'lista-clientes';
             axios.post(url).then(res => {
-                this.comboCliente = res.data.value;
+                this.clientes = res.data.value;
             }).catch(e => {
                 console.log(e);
             });
@@ -768,6 +824,9 @@ new Vue({
             });
         },
         cargarModalProducto: function () {
+
+        this.name = '';
+
             if (this.productosAgregados.length <= 0 && this.tipoVenta === 'bBoleta') {
                 M.toast({html: 'Debe cargar boleta'});
             } else {
@@ -780,7 +839,7 @@ new Vue({
                     instance.open();
                 }
             }
-
+            document.getElementById("buscarProducto").focus();
 
         },
 
@@ -874,7 +933,13 @@ new Vue({
                     var instance2 = M.Modal.getInstance(elems2);
                     instance2.close();
                 }
+                document.getElementById("productoBus").focus();
             }
+            
+           
+            
+            
+            
         },
         cerrarModal: function () {
             this.productos = [];
@@ -920,7 +985,7 @@ new Vue({
         agregarProductoFactura: function (p) {
 
             this.productoModal[0] = p;
-            this.cantidad = 0;
+            this.cantidad = '';
             //   this.productosAgregados[0] = p;
             var prod = this.productoModal[0]
             if (prod.stock <= 0) {
@@ -929,6 +994,7 @@ new Vue({
                 var elems = document.querySelector('#cantidad');
                 var instance = M.Modal.init(elems);
                 instance.open();
+                document.getElementById("modalCantidad").focus();
                 //this.productosAgregados[i].cantidad;
             }
 
@@ -1046,6 +1112,10 @@ new Vue({
                                 url = this.path + 'id-boleta';
                                 axios.post(url).then(res => {
                                     this.idventa = res.data[0].idventa;
+                                    
+                                    var iddocumento = this.idventa;
+                                    window.open(this.path + "generarPDF/" + iddocumento, "nuevo", "directories=no, location=no, menubar=no, scrollbars=yes, statusbar=no, tittlebar=no, width=600, height=800");
+                                    
                                 }).catch(e => {
                                     console.log(e);
                                 });
@@ -1057,6 +1127,10 @@ new Vue({
 
                 }
             }
+        },
+        
+         cargarModalPDF: function (p) {
+            window.open(this.path + "generarPDF/" + p.idventa, "nuevo", "directories=no, location=no, menubar=no, scrollbars=yes, statusbar=no, tittlebar=no, width=600, height=800");
         },
 
         limpiarGuia: function () {
@@ -1079,6 +1153,7 @@ new Vue({
             this.rutCliente = '';
             this.codVenta = null;
             this.descripcion = '';
+            this.clientes = [];
         },
 
         abrirSide: function () {
@@ -1095,6 +1170,11 @@ new Vue({
                         || p.nombre.includes(this.name) || p.nombre.toUpperCase().includes(this.name)
                         || p.codigo.includes(this.name) || p.codigo_interno.includes(this.name) ||
                         p.p_compra.includes(this.name) || p.p_venta.includes(this.name));
+        },
+        buscarCliente: function () {
+            return this.clientes.filter((p) => p.nombre.toLowerCase().includes(this.nombreCliente)
+                        || p.nombre.includes(this.nombreCliente) || p.nombre.toUpperCase().includes(this.nombreCliente)
+                        || p.rut.includes(this.nombreCliente));
         }
 
     },

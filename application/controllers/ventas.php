@@ -248,22 +248,21 @@ class ventas extends CI_Controller {
             $res = 'ERROR VENTA YA PROCESADA';
         } else {
             if (isset($codigo)) {
-                if($venta[0]->tipo == "GUIA"){
+                if ($venta[0]->tipo == "GUIA") {
                     $this->Crud->terminarVentaGuia($codigo);
-                    $res = 'VENTA COMPLETADA'; 
-                }else{
-                   $this->Crud->terminarVentaBoleta($codigo);
-                $res = 'VENTA COMPLETADA'; 
+                    $res = 'VENTA COMPLETADA';
+                } else {
+                    $this->Crud->terminarVentaBoleta($codigo);
+                    $res = 'VENTA COMPLETADA';
                 }
-                
             } else {
                 $res = 'Error de datos';
             }
         }
         echo json_encode(array('value' => $res));
     }
-    
-        public function terminarVentaGuia() {
+
+    public function terminarVentaGuia() {
 
         $codigo = $this->input->post('codigo');
 
@@ -288,8 +287,6 @@ class ventas extends CI_Controller {
         } else {
             $res = "Guia Procesada";
         }
-
-
         echo json_encode(array('value' => $res));
     }
 
@@ -344,29 +341,38 @@ class ventas extends CI_Controller {
 
         echo json_encode(array('value' => $res));
     }
-    
-    public function buscarClienteRut(){
-        
+
+    public function buscarClienteRut() {
+
         $rut = $this->input->post('rut');
-        
+
         if (isset($rut)) {
-            
+
 //            $rut = str_replace(' ', '', $rut);            
 //            $sub = str_replace('.', '', $rut);  
-            
+
             $res = $this->Crud->buscarClienteRut($rut);
-            echo json_encode(array('value' => $res[0]));  
-        }else{
+            echo json_encode(array('value' => $res[0]));
+        } else {
             $res = 'Datos incorrectos';
-            echo json_encode(array('value' => $res));  
-        }        
-              
+            echo json_encode(array('value' => $res));
+        }
     }
-    
-    public function contadorFinalizadas(){
-        
+
+    public function contadorFinalizadas() {
+
         $res = $this->Crud->ventasFinalizadas();
-        
+
+        echo json_encode(array('value' => $res));
+    }
+
+    public function agregarGuiaSii() {
+        $idventa = $this->input->post('idventa');
+        $nGuiaSii = $this->input->post('nGuiaSii');
+
+        if (isset($idventa) && isset($nGuiaSii)) {
+            $res = $this->Crud->agregarGuiaSii($idventa, $nGuiaSii);
+        }
         echo json_encode(array('value' => $res));
     }
 

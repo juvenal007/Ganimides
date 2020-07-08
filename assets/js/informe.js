@@ -1,6 +1,7 @@
 new Vue({
     el: '#newapp',
     data: {
+        nGuiaSii: '',
         idGuia: '',
         idcliente: '',
         codGuia: '',
@@ -51,7 +52,7 @@ new Vue({
 
     },
     methods: {
- abrirSide: function () {
+        abrirSide: function () {
             var elem = document.querySelector('.sidenav');
             var instance = M.Sidenav.init(elem);
             instance.open();
@@ -59,9 +60,9 @@ new Vue({
         finalizarGuia: function (p) {
 
             var venta = p;
-            var id = venta.idventa;
+            var id = p.idventa;
+
             var guiasList = this.guias;
-//            console.log(id+'VENTAID');           
             url = this.path + 'finalizar-venta-guia'
             param = new FormData();
             param.append('codigo', venta.idventa);
@@ -81,6 +82,67 @@ new Vue({
                 console.log(e);
             });
             //    M.toast({html: 'VENTA FINALIZADA'});
+
+        },
+
+        agregarGuiaSii: function () {
+
+            var venta = this.idGuia;
+            var id = this.idGuia;
+            var guiasList = this.guias;
+
+            url = this.path + 'agregar-guia-sii';
+            param = new FormData();
+            param.append('idventa', id);
+            param.append('nGuiaSii', this.nGuiaSii);
+
+            axios.post(url, param).then(res => {
+                console.log(res);
+                M.toast({html: 'N° Guía Modificado'});
+
+                for (var i = 0; i < guiasList.length; i++) {
+                    if (guiasList[i].idventa == id) {
+                        guiasList[i].nguia_sii = this.nGuiaSii;
+                    }
+                }
+                this.guias = [];
+                this.guias = guiasList;
+//                console.log(guiasList+'NUEVA LISTA CON FINALIZADA');
+                this.calcularTotal(this.guias);
+
+
+
+//                this.limpiar();
+//                this.limpiarGuia();
+                this.cerrarNguiaSii();
+            }).catch(e => {
+                console.log(e);
+            });
+
+
+        },
+
+        modificarNguiaSii: function (p) {
+
+            this.idGuia = p.idventa;
+            var elems = document.querySelector('#nguiaSii');
+            var instance = M.Modal.init(elems);
+            instance.open();
+
+        },
+        cerrarNguiaSii: function () {
+            var elems = document.querySelector('#nguiaSii');
+            var instance = M.Modal.getInstance(elems);
+            instance.close();
+            this.nGuiaSii = '';
+            this.clienteModal = [];
+        },
+        
+        cerrarModalDetalle: function (){
+            var elems = document.querySelector('#detalle');
+            var instance = M.Modal.getInstance(elems);
+            instance.close();
+  
         },
 
         cargarCliente: function (p) {
@@ -279,7 +341,7 @@ new Vue({
                     }
                 }).catch(e => {
                     console.log(e);
-                     M.toast({html: 'Sin datos'});
+                    M.toast({html: 'Sin datos'});
                 });
             }
             this.limpiarGuia();
@@ -335,15 +397,15 @@ new Vue({
             axios.post(url, param).then(res => {
                 this.detallesModal = res.data.detalle;
                 this.detalleProductosModal = res.data.value;
-                
+
                 var tot = 0;
-              
+
                 for (var i = 0; i < this.detalleProductosModal.length; i++) {
                     tot = tot + parseInt(this.detalleProductosModal[i].total);
                 }
-                
-                
-                
+
+
+
                 this.totalVentas = this.detalleProductosModal[0].total;
                 this.descuentoid = this.detalleProductosModal[0].descuento;
                 console.log(tot);
@@ -369,7 +431,7 @@ new Vue({
                 this.contarVentas = cantAcumulada;
                 this.gananciaTotal = ganancia;
                 this.ventaConIva = v2;
-                
+
 
                 this.detallesModal[0].cantidadP = this.detalleProductosModal.length;
                 this.detallesModal[0].cantidadU = cantAcumulada;
@@ -381,7 +443,7 @@ new Vue({
 
         cargarGuia: function () {
 
-            
+
             var id = this.idguia;
             var url = this.path + 'obtener-guia';
             var param = new FormData();
@@ -391,11 +453,11 @@ new Vue({
                 console.log(res.data.value);
                 this.guia = res.data.value;
                 if (this.guia.tipo == 'GUIA') {
-                   this.modalDetalleFechas(this.guia); 
-                }else{
-                   M.toast({html: 'Debe ser una guia'}); 
+                    this.modalDetalleFechas(this.guia);
+                } else {
+                    M.toast({html: 'Debe ser una guia'});
                 }
-                
+
 
             }).catch(e => {
                 console.log(e);
@@ -648,12 +710,12 @@ new Vue({
                         total += this.productoMes[i].TotalVentas;
                         console.log('cant');
                     }
-                    
+
                     var tot = 0;
                     for (var i = 0; i < this.ventas.length; i++) {
                         tot += parseInt(this.ventas[i].total);
                     }
-                    
+
                     this.gananciaTotal = gananciaAcumulada;
                     this.totalVentas = tot;
                     this.contarVentas = cantidad;
@@ -828,7 +890,7 @@ new Vue({
                 this.ventas = res.data.value;
                 this.buscador = 'mes';
                 console.log(res.data.detalle);
-                console.log(res.data.value+"VENTAS");
+                console.log(res.data.value + "VENTAS");
                 this.productoMes = res.data.detalle;
                 //    this.producto = res.data.producto;
 
@@ -858,7 +920,7 @@ new Vue({
                         total += this.productoMes[i].TotalVentas;
                         console.log('cant');
                     }
-                    
+
 //                    var ventasTotal = this.ventas;
 //                    
 //                    for (var i = 0; i < this.ventas.length; i++) {
@@ -872,7 +934,7 @@ new Vue({
                     for (var i = 0; i < this.ventas.length; i++) {
                         tot = tot + parseInt(this.ventas[i].total);
                     }
-                    
+
                     this.gananciaTotal = gananciaAcumulada;
                     this.totalVentas = tot;
                     this.contarVentas = cantidad;
@@ -973,7 +1035,7 @@ new Vue({
             this.rutCliente = '';
             this.idcliente = '';
             this.idguia = '';
-            this.descuentoid= '';
+            this.descuentoid = '';
             this.idventa = '';
         },
         limpiarGuia: function () {
